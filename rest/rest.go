@@ -10,6 +10,6 @@ func RunAPI(address string) error {
 	// Add log entries
 	r.POST("/ingest", h.AddLogs)
 	// Get logs by device id
-	r.GET("/logs/:deviceId", h.GetLogsByDeviceId)
+	r.GET("/device/:deviceId", h.GetLogsByDeviceId)
 	return r.Run(address)
 }

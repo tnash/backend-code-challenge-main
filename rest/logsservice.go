@@ -37,9 +37,9 @@ type DeviceLogs struct {
 }
 
 type Log struct {
-	LogDate     *time.Time `json:"logDate"`
-	Temperature int64      `json:"temperature"`
-	Humidity    float32    `json:"humidity"`
+	LogDate     time.Time `json:"logDate"`
+	Temperature int64     `json:"temperature"`
+	Humidity    float32   `json:"humidity"`
 }
 
 func NewLogsService() (LogsServiceInterface, error) {
@@ -115,7 +115,7 @@ func ExtractEntryDate(dateString string) (time.Time, error) {
 	if err != nil {
 		return eventDate, errors.New("Error: event date not of expected datetime value.")
 	}
-	return eventDate, err
+	return eventDate.UTC(), err
 }
 
 func ExtractTemperature(tempString string) (int64, error) {
@@ -135,14 +135,14 @@ func BuildDeviceLog(logs []models.Log) DeviceLogs {
 	if len(logs) > 0 {
 		var totalTemperature int64 = 0
 		var averageTemperature float64
-		mostRecentLogDate := time.Now().UTC()
+		var mostRecentLogDate time.Time
 		logRecords := make([]Log, len(logs))
 		for index, logEntry := range logs {
 			totalTemperature += logEntry.TempFarenheit
-			if logEntry.EventDate.Before(mostRecentLogDate) {
+			if logEntry.EventDate.After(mostRecentLogDate) {
 				mostRecentLogDate = logEntry.EventDate.UTC()
 			}
-			logRecords[index] = Log{LogDate: logEntry.EventDate, Temperature: logEntry.TempFarenheit}
+			logRecords[index] = Log{LogDate: logEntry.EventDate.UTC(), Temperature: logEntry.TempFarenheit}
 		}
 		averageTemperature = float64(totalTemperature / int64(len(logs)))
 

@@ -20,42 +20,41 @@ func NewMockLogsRepository(logs []models.Log) *MockLogsRepository {
 func NewMockLogsRepositoryWithData() *MockLogsRepository {
 	LOGS := `[
         {
-			"EventId": 21
+			"EventId": 21,
             "EventDate": "2022-03-22 21:42:02.362000 +00:00",
             "TempFarenheit": 14,
             "DeviceId": "YYARKx"
         },
         {
-			"EventId": 22
+			"EventId": 22,
             "EventDate": "2022-03-22 21:42:04.372000 +00:00",
             "TempFarenheit": 28,
             "DeviceId": "YYARKx"
         },
         {
-			"EventId": 23
+			"EventId": 23,
             "EventDate": "2022-03-22 21:42:50.572000 +00:00",
             "TempFarenheit": 44,
             "DeviceId": "YYARKx"
         },
         {
-			"EventId": 24
+			"EventId": 24,
             "EventDate": "2022-03-23 21:42:02.362000 +00:00",
             "TempFarenheit": -6,
             "DeviceId": "XXARKx"
         },
         {
-			"EventId": 25
+			"EventId": 25,
             "EventDate": "2022-03-22 21:42:04.362000 +00:00",
             "TempFarenheit": 10,
             "DeviceId": "XXARKx"
         },
         {
-			"EventId": 26
+			"EventId": 26,
             "EventDate": "2022-03-20 21:42:50.572000 +00:00",
             "TempFarenheit": 48,
             "DeviceId": "XXARKx"
         }
-
     ]`
 	var logs []models.Log
 	err := json.Unmarshal([]byte(LOGS), &logs)

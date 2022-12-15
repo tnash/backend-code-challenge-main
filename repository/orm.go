@@ -19,8 +19,12 @@ func NewORM(host, user, password, dbname, port string) (*DBORM, error) {
 	}, err
 }
 
+func ProvideORM(db *gorm.DB) DBORM {
+	return DBORM{db}
+}
+
 func (db *DBORM) GetLogsByDeviceId(deviceId string) (logs []models.Log, err error) {
-	return logs, db.Where(&models.Log{DeviceId: deviceId}).Order("event_date desc").Find(&logs).Error
+	return logs, db.Where(&models.Log{DeviceId: deviceId}).Order("event_date asc").Find(&logs).Error
 }
 
 func (db *DBORM) AddLog(log models.Log) (models.Log, error) {
