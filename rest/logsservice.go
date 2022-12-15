@@ -33,13 +33,14 @@ type RequestBody struct {
 type DeviceLogs struct {
 	AverageTemperature float64    `json:"averageTemperature"`
 	MostRecentLogDate  *time.Time `json:"mostRecentLogDate"`
+	TotalAlerts        int        `json:"totalAlerts"`
 	Logs               []Log      `json:"logs"`
 }
 
 type Log struct {
 	LogDate     time.Time `json:"logDate"`
 	Temperature int64     `json:"temperature"`
-	Humidity    float32   `json:"humidity"`
+	Alert       bool      `json:"alert"`
 }
 
 func NewLogsService() (LogsServiceInterface, error) {
@@ -136,17 +137,23 @@ func BuildDeviceLog(logs []models.Log) DeviceLogs {
 		var totalTemperature int64 = 0
 		var averageTemperature float64
 		var mostRecentLogDate time.Time
+		var totalAlerts int = 0
 		logRecords := make([]Log, len(logs))
 		for index, logEntry := range logs {
+			var alert bool = false
+			if logEntry.TempFarenheit > 32 {
+				totalAlerts += 1
+				alert = true
+			}
 			totalTemperature += logEntry.TempFarenheit
 			if logEntry.EventDate.After(mostRecentLogDate) {
 				mostRecentLogDate = logEntry.EventDate.UTC()
 			}
-			logRecords[index] = Log{LogDate: logEntry.EventDate.UTC(), Temperature: logEntry.TempFarenheit}
+			logRecords[index] = Log{LogDate: logEntry.EventDate.UTC(), Temperature: logEntry.TempFarenheit, Alert: alert}
 		}
 		averageTemperature = float64(totalTemperature / int64(len(logs)))
 
-		return DeviceLogs{AverageTemperature: averageTemperature, MostRecentLogDate: &mostRecentLogDate, Logs: logRecords}
+		return DeviceLogs{AverageTemperature: averageTemperature, MostRecentLogDate: &mostRecentLogDate, TotalAlerts: totalAlerts, Logs: logRecords}
 	} else {
 		return DeviceLogs{}
 	}
